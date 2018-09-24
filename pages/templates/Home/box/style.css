@@ -1,0 +1,72 @@
+.wrap {
+  position: relative;
+  box-sizing: border-box;
+  margin-right: 1%;
+  width: 19%;
+  height: 25%;
+  border: solid 2px #00ff00;
+}
+
+.isReserved {
+  position: relative;
+  box-sizing: border-box;
+  margin-right: 1%;
+  width: 19%;
+  height: 25%;
+  border: solid 2px #00ff00;
+}
+
+.isReserved::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.isReserved::after {
+  content: '誰かが選択中';
+  position: absolute;
+  top: 42%;
+  width: 100%;
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  z-index: 1;
+}
+
+.isSelected {
+  position: relative;
+  box-sizing: border-box;
+  margin-right: 1%;
+  width: 19%;
+  height: 25%;
+  border: solid 2px #00ff00;
+}
+
+.isSelected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.isSelected::after {
+  content: '選択中';
+  position: absolute;
+  top: 42%;
+  width: 100%;
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  z-index: 1;
+}
