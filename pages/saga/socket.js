@@ -67,16 +67,13 @@ function* initStatus({ socket, userId }) {
 function* syncStatus(socket) {
   while (true) {
     const { payload: { boxId, userId } } = yield take(socketActions.SYNC_RESERVE);
-    const selectedBox = yield select(state => state.socket.selectedBox);
 
-    // reserveBoxをbroadcastして、他ブラウザのreseveBoxのstore更新
-    socket.emit('broadCastReserve', { boxId, userId });
-    // 自身のブラウザのselectedBoxのstore更新
-    socket.emit('updateSelected', { boxId, userId });
-
-    yield put(socketActions.selectedUpdate({
-      selectedBox: [...selectedBox, boxId]
-    }));
+    yield all([
+      // reserveBoxのredisを更新、更新した値をbroadcastして、他ブラウザのreseveBoxのstore更新
+      call(socket.emit, ['broadCastReserve', { boxId, userId }]),
+      // selectedBoxのredisを更新、自身のブラウザのselectedBoxのstore更新
+      call(socket.emit, ['updateSelected', { boxId, userId }]),
+    ])
   }
 }
 
@@ -85,19 +82,7 @@ function* writeStatus(socket) {
 
   while (true) {
     // subscriber関数から渡ってきたデータ(reduxのaction)を取得します。
-    let action = yield take(channel);
-
-    if (action.type === socketActions.RESERVE_UPDATE) {
-      const { reservedBox } = action.payload;
-
-      action.payload.reservedBox = reservedBox;
-    }
-
-    if (action.type === socketActions.SELECTED_UPDATE) {
-      const { selectedBox } = action.payload;
-
-      action.payload.selectedBox = selectedBox;
-    }
+    const action = yield take(channel);
 
     yield put(action);
   }
@@ -121,7 +106,7 @@ function* watchOnSocket() {
       // その`**:receive`のイベントを待ち受けるタスク。(websocketとredux-sagaの世界を繋ぐためにeventChannelを用いる)
       yield fork(writeStatus, socket);
     } catch (err) {
-      throw err;
+      console.error('socket error:', err)
     }
   }
 }

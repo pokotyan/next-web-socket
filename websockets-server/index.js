@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
   socket.on('updateSelected', async ({ boxId, userId }) => {
     const selectedBox = await updateSelectedBox({ boxId, userId }) || [];
 
-    socket.emit('updateSelected:receive', JSON.parse(updateSelectedBox));
+    socket.emit('updateSelected:receive', JSON.parse(selectedBox));
   });
 });
 
